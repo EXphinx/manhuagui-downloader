@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "manhuagui-downloader"
+version = "0.0.1"
+description = "Local ManhuaGui download queue with web UI, resume, and ZIP packaging"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "manhuagui-downloader contributors" }]
+dependencies = []
+
+[project.scripts]
+manhuagui = "manhuagui_downloader.cli:main"
+manhuagui-backend = "manhuagui_downloader.server:main"
+
+[tool.setuptools.packages.find]
+include = ["manhuagui_downloader*"]

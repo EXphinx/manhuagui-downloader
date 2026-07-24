@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.DS_Store
+.impeccable/
+.pytest_cache/
+.venv/
+.venv-build/
+node_modules/
+.pnpm-store/
+downloads/
+dist/
+build/
+src-tauri/target/
+src-tauri/binaries/
