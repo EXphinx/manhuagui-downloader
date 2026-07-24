@@ -5,6 +5,17 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to build
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - windows
+          - macos-intel
+          - macos-apple-silicon
 
 permissions:
   contents: write
@@ -17,58 +28,77 @@ jobs:
       matrix:
         include:
           - name: Windows x64
+            id: windows
             platform: windows-latest
             target: x86_64-pc-windows-msvc
+            bundles: nsis
           - name: macOS Intel
+            id: macos-intel
             platform: macos-15-intel
             target: x86_64-apple-darwin
+            bundles: app,dmg
           - name: macOS Apple Silicon
+            id: macos-apple-silicon
             platform: macos-15
             target: aarch64-apple-darwin
+            bundles: app,dmg
 
     runs-on: ${{ matrix.platform }}
+    env:
+      SHOULD_BUILD: ${{ github.event_name != 'workflow_dispatch' || inputs.platform == 'all' || inputs.platform == matrix.id }}
 
     steps:
       - name: Check out release source
+        if: env.SHOULD_BUILD == 'true'
         uses: actions/checkout@v4
 
       - name: Install pnpm
+        if: env.SHOULD_BUILD == 'true'
         uses: pnpm/action-setup@v4
         with:
           version: 11.9.0
 
       - name: Install Node.js
+        if: env.SHOULD_BUILD == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
 
       - name: Install Python
+        if: env.SHOULD_BUILD == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install Rust
+        if: env.SHOULD_BUILD == 'true'
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
 
       - name: Install project dependencies
+        if: env.SHOULD_BUILD == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Install sidecar builder
+        if: env.SHOULD_BUILD == 'true'
         run: python -m pip install --disable-pip-version-check pyinstaller==6.16.0
 
       - name: Run Python tests
+        if: env.SHOULD_BUILD == 'true'
         run: python -m unittest discover -v
 
       - name: Run frontend tests
+        if: env.SHOULD_BUILD == 'true'
         run: pnpm test
 
       - name: Build Python sidecar
+        if: env.SHOULD_BUILD == 'true'
         run: python scripts/build_sidecar.py --target-triple ${{ matrix.target }}
 
       - name: Build and publish desktop package
+        if: env.SHOULD_BUILD == 'true'
         uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,5 +112,5 @@ jobs:
           releaseDraft: false
           prerelease: false
           retryAttempts: 2
-          args: --target ${{ matrix.target }}
+          args: --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
           releaseAssetNamePattern: manhuagui-downloader_[version]_[platform]_[arch][setup].[ext]

@@ -23,7 +23,7 @@ Tauri，随应用打包的下载服务使用 Python 标准库。
 [GitHub Releases](https://github.com/EXphinx/manhuagui-downloader/releases/latest)
 下载最新安装包。
 
-- **Windows x64：** 使用 `.exe` 安装程序或 `.msi` 安装包；
+- **Windows x64：** 使用 `.exe` 安装程序；
 - **Apple Silicon Mac：** 使用文件名含 `aarch64` 的 DMG；
 - **Intel Mac：** 使用文件名含 `x64` 的 DMG。
 
@@ -91,7 +91,6 @@ pnpm desktop:build
 
 ```text
 src-tauri\target\release\bundle\nsis\
-src-tauri\target\release\bundle\msi\
 ```
 
 ### macOS 编译依赖

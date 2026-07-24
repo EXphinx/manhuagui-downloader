@@ -24,7 +24,7 @@ Python's standard library.
 Download the latest packages from
 [GitHub Releases](https://github.com/EXphinx/manhuagui-downloader/releases/latest).
 
-- **Windows x64:** use the `.exe` installer or `.msi` package.
+- **Windows x64:** use the `.exe` installer.
 - **Mac with Apple Silicon:** use the `aarch64` DMG.
 - **Mac with an Intel processor:** use the `x64` DMG.
 
@@ -94,7 +94,6 @@ The installers are written to:
 
 ```text
 src-tauri\target\release\bundle\nsis\
-src-tauri\target\release\bundle\msi\
 ```
 
 ### macOS build requirements
